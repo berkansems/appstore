@@ -15,8 +15,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up Docker
-        uses: docker/setup-docker@v1
 
       - name: Install Docker Compose
         run: |

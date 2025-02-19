@@ -1,4 +1,3 @@
----
 name: Checks
 
 on: [push]
@@ -7,9 +6,22 @@ jobs:
   test-lint:
     name: Test and Lint
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install Docker
+        uses: docker/setup-docker@v2
+        with:
+          version: 20.10
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version  # Check the installed version
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -21,7 +33,9 @@ jobs:
           pwd
           ls -l
           ls -l appstore/
+
       - name: Test
         run: docker-compose run --rm appstore sh -c "python manage.py test"
+
       - name: Linting
         run: docker-compose run --rm appstore sh -c "flake8"

@@ -1,7 +1,7 @@
 ---
 name: Checks
 
-on: [push]
+on: [ push ]
 
 jobs:
   test-lint:
@@ -15,6 +15,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Set up Docker
+        uses: docker/setup-docker@v1
+
+      - name: Install Docker Compose
+        run: |
+          # Install Docker Compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version  # Verify installation
       - name: List directory structure
         run: |
           pwd

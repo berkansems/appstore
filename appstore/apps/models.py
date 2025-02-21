@@ -18,8 +18,8 @@ class App(models.Model):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='apps')
-    verification_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='apps', db_index=True)
+    verification_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     verified_date = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,13 +29,13 @@ class App(models.Model):
     def verify(self):
         if not self.verified_date:  # if not already verified
             self.verification_status = self.STATUS_VERIFIED
-            self.verified_date = now()
             self.save()
 
     def save(self, *args, **kwargs):
-        if self.verification_status == self.STATUS_VERIFIED and not self.verified_date:
-            self.verified_date = now()
-            self.save()
+        if self.tracker.has_changed('verification_status') and not self.verified_date:
+            if self.verification_status == self.STATUS_VERIFIED:
+                self.verified_date = now()
+
         super(App, self).save(*args, **kwargs)
 
     def __str__(self):

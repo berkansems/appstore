@@ -1,10 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from apps.models import *
-from django.urls import reverse
+from apps.models import App
+
 
 def create_user(**kwargs):
     return get_user_model().objects.create_user(**kwargs)
+
 
 def create_app(**kwargs):
     app_params = {
@@ -52,7 +54,7 @@ class AppStoreAppTestCase(TestCase):
             'description': 'Custom app description',
             'price': 29.99,
         }
-        app = create_app(owner= self.user, **custom_params)
+        app = create_app(owner=self.user, **custom_params)
         self.assertEqual(app.title, 'Custom app title')
         self.assertEqual(app.description, 'Custom app description')
         self.assertEqual(app.price, 29.99)
@@ -92,7 +94,6 @@ class AppStoreAppTestCase(TestCase):
 
         self.assertIsNotNone(self.app1.verified_date)
         self.assertIsNone(self.app2.verified_date)
-
 
     def test_verify_app_once(self):
         """Test that an app can only be verified once."""

@@ -3,6 +3,7 @@ from django.db import models
 from model_utils import FieldTracker
 from django.utils.timezone import now
 
+
 class App(models.Model):
     STATUS_PENDING = 'pending'
     STATUS_VERIFIED = 'verified'

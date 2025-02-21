@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import App
 
+
 class AppSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 

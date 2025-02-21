@@ -17,6 +17,7 @@ from apps.serializers import AppSerializer, AppDetailSerializer
 
 APPS_URL = reverse('app:app-list')
 
+
 def create_user(**kwargs):
     return get_user_model().objects.create_user(**kwargs)
 
@@ -245,7 +246,6 @@ class PrivateAppApiTests(TestCase):
             self.assertEqual(getattr(app, k), v)
         self.assertEqual(app.owner, self.user)
 
-
     def test_verification_status_update_is_impossible(self):
         """
         checks that even if verification_status is in the payload we can not update it.
@@ -268,7 +268,7 @@ class PrivateAppApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         the_app = App.objects.get(id=app.id)
-        self.assertEqual(the_app.verification_status, App.STATUS_PENDING) # remained unchanged
+        self.assertEqual(the_app.verification_status, App.STATUS_PENDING)  # remained unchanged
 
     def test_update_user_returns_error(self):
         """Test changing the app owner results in an error. it is a read_only field."""
